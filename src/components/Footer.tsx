@@ -1,8 +1,38 @@
 
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { useToast } from '@/hooks/use-toast';
 
 const Footer = () => {
+  const [email, setEmail] = useState('');
+  const { toast } = useToast();
+
+  const handleSubscribe = () => {
+    if (email.trim() && email.includes('@')) {
+      toast({
+        title: "Subscribed successfully!",
+        description: `You'll receive updates at ${email}`,
+      });
+      setEmail('');
+    } else {
+      toast({
+        title: "Invalid email",
+        description: "Please enter a valid email address",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleLinkClick = (linkName: string) => {
+    toast({
+      title: "Navigation",
+      description: `Opening ${linkName} page...`,
+    });
+    // In a real app, these would navigate to actual pages
+    console.log('Clicked link:', linkName);
+  };
+
   return (
     <footer className="bg-gray-900 text-white py-12">
       <div className="container mx-auto px-4">
@@ -22,10 +52,38 @@ const Footer = () => {
           <div>
             <h4 className="font-semibold mb-4">Quick Links</h4>
             <ul className="space-y-2 text-gray-300">
-              <li><a href="#" className="hover:text-blue-400 transition-colors">About Us</a></li>
-              <li><a href="#" className="hover:text-blue-400 transition-colors">Contact</a></li>
-              <li><a href="#" className="hover:text-blue-400 transition-colors">Shipping Info</a></li>
-              <li><a href="#" className="hover:text-blue-400 transition-colors">Returns</a></li>
+              <li>
+                <button 
+                  onClick={() => handleLinkClick('About Us')}
+                  className="hover:text-blue-400 transition-colors text-left"
+                >
+                  About Us
+                </button>
+              </li>
+              <li>
+                <button 
+                  onClick={() => handleLinkClick('Contact')}
+                  className="hover:text-blue-400 transition-colors text-left"
+                >
+                  Contact
+                </button>
+              </li>
+              <li>
+                <button 
+                  onClick={() => handleLinkClick('Shipping Info')}
+                  className="hover:text-blue-400 transition-colors text-left"
+                >
+                  Shipping Info
+                </button>
+              </li>
+              <li>
+                <button 
+                  onClick={() => handleLinkClick('Returns')}
+                  className="hover:text-blue-400 transition-colors text-left"
+                >
+                  Returns
+                </button>
+              </li>
             </ul>
           </div>
 
@@ -33,10 +91,38 @@ const Footer = () => {
           <div>
             <h4 className="font-semibold mb-4">Customer Service</h4>
             <ul className="space-y-2 text-gray-300">
-              <li><a href="#" className="hover:text-blue-400 transition-colors">Help Center</a></li>
-              <li><a href="#" className="hover:text-blue-400 transition-colors">Track Order</a></li>
-              <li><a href="#" className="hover:text-blue-400 transition-colors">Warranty</a></li>
-              <li><a href="#" className="hover:text-blue-400 transition-colors">Support</a></li>
+              <li>
+                <button 
+                  onClick={() => handleLinkClick('Help Center')}
+                  className="hover:text-blue-400 transition-colors text-left"
+                >
+                  Help Center
+                </button>
+              </li>
+              <li>
+                <button 
+                  onClick={() => handleLinkClick('Track Order')}
+                  className="hover:text-blue-400 transition-colors text-left"
+                >
+                  Track Order
+                </button>
+              </li>
+              <li>
+                <button 
+                  onClick={() => handleLinkClick('Warranty')}
+                  className="hover:text-blue-400 transition-colors text-left"
+                >
+                  Warranty
+                </button>
+              </li>
+              <li>
+                <button 
+                  onClick={() => handleLinkClick('Support')}
+                  className="hover:text-blue-400 transition-colors text-left"
+                >
+                  Support
+                </button>
+              </li>
             </ul>
           </div>
 
@@ -51,8 +137,15 @@ const Footer = () => {
                 type="email"
                 placeholder="Your email"
                 className="bg-gray-800 border-gray-700 text-white"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                onKeyPress={(e) => e.key === 'Enter' && handleSubscribe()}
               />
-              <Button size="sm" className="bg-blue-600 hover:bg-blue-700">
+              <Button 
+                size="sm" 
+                className="bg-blue-600 hover:bg-blue-700"
+                onClick={handleSubscribe}
+              >
                 Subscribe
               </Button>
             </div>

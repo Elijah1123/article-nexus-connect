@@ -4,12 +4,51 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { ShoppingCart, Search, Menu, X } from 'lucide-react';
 import { Input } from '@/components/ui/input';
+import { useCart } from '@/hooks/useCart';
+import { useToast } from '@/hooks/use-toast';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [cartCount, setCartCount] = useState(0);
+  const [searchQuery, setSearchQuery] = useState('');
+  const { getCartCount } = useCart();
+  const { toast } = useToast();
 
   const categories = ['Smartphones', 'Laptops', 'Headphones', 'Cameras', 'Gaming', 'Accessories'];
+
+  const handleSearch = () => {
+    if (searchQuery.trim()) {
+      toast({
+        title: "Search functionality",
+        description: `Searching for "${searchQuery}"...`,
+      });
+      // In a real app, this would trigger a search filter
+      console.log('Searching for:', searchQuery);
+    }
+  };
+
+  const handleCategoryClick = (category: string) => {
+    toast({
+      title: "Category filter",
+      description: `Filtering products by ${category}`,
+    });
+    // In a real app, this would filter products by category
+    console.log('Filtering by category:', category);
+    setIsMenuOpen(false);
+  };
+
+  const handleCartClick = () => {
+    toast({
+      title: "Shopping cart",
+      description: `You have ${getCartCount()} items in your cart`,
+    });
+    // In a real app, this would open the cart sidebar/modal
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      handleSearch();
+    }
+  };
 
   return (
     <header className="sticky top-0 z-50 bg-white border-b shadow-sm">
@@ -25,7 +64,7 @@ const Header = () => {
         <div className="flex items-center justify-between">
           {/* Logo */}
           <div className="flex items-center">
-            <h1 className="text-2xl font-bold text-blue-600">ElectroStore</h1>
+            <h1 className="text-2xl font-bold text-blue-600 cursor-pointer">ElectroStore</h1>
           </div>
 
           {/* Search Bar - Desktop */}
@@ -35,10 +74,14 @@ const Header = () => {
                 type="text"
                 placeholder="Search for electronics..."
                 className="w-full pl-4 pr-12 py-2 border rounded-lg"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                onKeyPress={handleKeyPress}
               />
               <Button
                 size="sm"
                 className="absolute right-1 top-1 bottom-1 px-3"
+                onClick={handleSearch}
               >
                 <Search className="h-4 w-4" />
               </Button>
@@ -48,11 +91,11 @@ const Header = () => {
           {/* Right Icons */}
           <div className="flex items-center space-x-4">
             {/* Cart */}
-            <Button variant="outline" size="sm" className="relative">
+            <Button variant="outline" size="sm" className="relative" onClick={handleCartClick}>
               <ShoppingCart className="h-5 w-5" />
-              {cartCount > 0 && (
+              {getCartCount() > 0 && (
                 <Badge className="absolute -top-2 -right-2 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs">
-                  {cartCount}
+                  {getCartCount()}
                 </Badge>
               )}
             </Button>
@@ -76,10 +119,14 @@ const Header = () => {
               type="text"
               placeholder="Search for electronics..."
               className="w-full pl-4 pr-12 py-2 border rounded-lg"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onKeyPress={handleKeyPress}
             />
             <Button
               size="sm"
               className="absolute right-1 top-1 bottom-1 px-3"
+              onClick={handleSearch}
             >
               <Search className="h-4 w-4" />
             </Button>
@@ -96,6 +143,7 @@ const Header = () => {
                 key={category}
                 variant="ghost"
                 className="justify-start md:justify-center hover:text-blue-600 hover:bg-blue-50"
+                onClick={() => handleCategoryClick(category)}
               >
                 {category}
               </Button>

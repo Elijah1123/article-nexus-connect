@@ -4,15 +4,24 @@ import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Star, ShoppingCart } from 'lucide-react';
 import { Product } from '@/data/products';
+import { useCart } from '@/hooks/useCart';
 
 interface ProductCardProps {
   product: Product;
 }
 
 const ProductCard = ({ product }: ProductCardProps) => {
+  const { addToCart } = useCart();
+  
   const discountPercentage = product.originalPrice 
     ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
     : 0;
+
+  const handleAddToCart = () => {
+    if (product.inStock) {
+      addToCart(product);
+    }
+  };
 
   return (
     <Card className="group hover:shadow-lg transition-shadow duration-300 overflow-hidden">
@@ -64,6 +73,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
           className="w-full" 
           disabled={!product.inStock}
           variant={product.inStock ? "default" : "secondary"}
+          onClick={handleAddToCart}
         >
           <ShoppingCart className="h-4 w-4 mr-2" />
           {product.inStock ? "Add to Cart" : "Out of Stock"}

@@ -1,15 +1,31 @@
 
 import { Card, CardContent } from '@/components/ui/card';
 import { categories } from '@/data/products';
+import { useToast } from '@/hooks/use-toast';
 
 const Categories = () => {
+  const { toast } = useToast();
+
+  const handleCategoryClick = (categoryName: string) => {
+    toast({
+      title: "Category selected",
+      description: `Browsing ${categoryName} products`,
+    });
+    // In a real app, this would filter products or navigate to category page
+    console.log('Selected category:', categoryName);
+  };
+
   return (
     <section className="py-12 bg-gray-50">
       <div className="container mx-auto px-4">
         <h2 className="text-3xl font-bold text-center mb-8">Shop by Category</h2>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
           {categories.map((category) => (
-            <Card key={category.name} className="group hover:shadow-lg transition-shadow duration-300 cursor-pointer">
+            <Card 
+              key={category.name} 
+              className="group hover:shadow-lg transition-shadow duration-300 cursor-pointer"
+              onClick={() => handleCategoryClick(category.name)}
+            >
               <CardContent className="p-4 text-center">
                 <img
                   src={category.image}
