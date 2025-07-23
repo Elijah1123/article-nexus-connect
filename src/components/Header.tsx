@@ -6,6 +6,7 @@ import { ShoppingCart, Search, Menu, X } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { useCart } from '@/hooks/useCart';
 import { useToast } from '@/hooks/use-toast';
+import CartSidebar from './CartSidebar';
 
 interface HeaderProps {
   onCategorySelect: (category: string | null) => void;
@@ -14,6 +15,7 @@ interface HeaderProps {
 
 const Header = ({ onCategorySelect, selectedCategory }: HeaderProps) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isCartOpen, setIsCartOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const { getCartCount } = useCart();
   const { toast } = useToast();
@@ -41,11 +43,7 @@ const Header = ({ onCategorySelect, selectedCategory }: HeaderProps) => {
   };
 
   const handleCartClick = () => {
-    toast({
-      title: "Shopping cart",
-      description: `You have ${getCartCount()} items in your cart`,
-    });
-    // In a real app, this would open the cart sidebar/modal
+    setIsCartOpen(true);
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -162,6 +160,8 @@ const Header = ({ onCategorySelect, selectedCategory }: HeaderProps) => {
           </div>
         </div>
       </nav>
+
+      <CartSidebar isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
     </header>
   );
 };
