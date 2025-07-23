@@ -7,7 +7,12 @@ import { Input } from '@/components/ui/input';
 import { useCart } from '@/hooks/useCart';
 import { useToast } from '@/hooks/use-toast';
 
-const Header = () => {
+interface HeaderProps {
+  onCategorySelect: (category: string | null) => void;
+  selectedCategory: string | null;
+}
+
+const Header = ({ onCategorySelect, selectedCategory }: HeaderProps) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const { getCartCount } = useCart();
@@ -27,12 +32,11 @@ const Header = () => {
   };
 
   const handleCategoryClick = (category: string) => {
+    onCategorySelect(category);
     toast({
       title: "Category filter",
-      description: `Filtering products by ${category}`,
+      description: `Showing ${category} products`,
     });
-    // In a real app, this would filter products by category
-    console.log('Filtering by category:', category);
     setIsMenuOpen(false);
   };
 
@@ -138,10 +142,17 @@ const Header = () => {
       <nav className={`border-t ${isMenuOpen ? 'block' : 'hidden'} md:block`}>
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row md:justify-center space-y-2 md:space-y-0 md:space-x-8 py-4">
+            <Button
+              variant={selectedCategory === null ? "default" : "ghost"}
+              className="justify-start md:justify-center hover:text-blue-600 hover:bg-blue-50"
+              onClick={() => onCategorySelect(null)}
+            >
+              All Products
+            </Button>
             {categories.map((category) => (
               <Button
                 key={category}
-                variant="ghost"
+                variant={selectedCategory === category ? "default" : "ghost"}
                 className="justify-start md:justify-center hover:text-blue-600 hover:bg-blue-50"
                 onClick={() => handleCategoryClick(category)}
               >
